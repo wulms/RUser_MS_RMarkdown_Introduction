@@ -1,0 +1,332 @@
+---
+title: "Introduction to RMarkdown"
+author: "Niklas Wulms"
+date: "6 May 2019"
+output: 
+  ioslides_presentation
+bibliography: ReproducibleResearch.bib
+---
+
+```{r echo=FALSE, warning=FALSE}
+library(knitr)
+library(png)
+```
+
+```{r libraries, echo=FALSE, eval=FALSE}
+install.packages("png")
+```
+
+
+```{r echo=FALSE, eval=FALSE}
+# The code in here makes it possible to convert a single .Rmd file into different formats! (ioslides, html)
+# You can render other Rmd files from your main file!
+
+# You need to run these files before - to install all libraries embedded in the .rmd manually, because the "install.libraries" chunk is not evaluated by standard (EVAL=FALSE).
+
+rmarkdown::render('RMD_examples/Demo2_Advanced_Tools_Regression.Rmd', 'ioslides_presentation', output_file = "Demo2_Advanced_Tools_Regression_ioslides.html")
+
+rmarkdown::render('RMD_examples/Demo2_Advanced_Tools_Regression.Rmd', 'html_document', output_file = "Demo2_Advanced_Tools_Regression.html")
+```
+
+## Introduction
+
+Niklas Wulms
+
+- MSc Biology
+- PhD student (Dr. rer. medic.)
+- Institute for Epidemiology and Social Medicine
+- research: ageing and gender differences in structural and functional MRI
+- actual project: computer vision: lesion delineation in structural MRI 
+
+
+## Structure
+
+* Introduction and Relevance
+* Demonstration #1: How to start
+* Basic commands and functions
+* Demonstration #2: Advanced functions
+
+```{r echo=FALSE, out.width = "40%", fig.align="right"}
+knitr::include_graphics("https://bookdown.org/yihui/rmarkdown/images/hex-rmarkdown.png") 
+```
+
+## My aim
+
+* You are giving RMarkdown a try. 
+
+* Motivate you to write tutorials, reproducible code and publications.
+
+## Question:
+
+Do you use notebooks or Rmarkdown?
+
+Are you able to reproduce methods in publications or conference talks?
+
+Are you able to produce reproducible analysis?
+
+Is reproducibility important?
+
+
+## "The Dog Ate My Program"
+
+Credibility Crisis: impossible to verify most of the (computational) results presented at conferences and in papers today [@Leveque2012]
+
+"In our own experience we have multiple times contacted the authors
+of a particularly interesting paper, asked for source code, either to be met with a negative response
+or stone cold silence." [@Collberg2014] 
+
+Total reproducibility: 25% (n = 613)
+
+##  Reasons [@Collberg2014]
+
+- versioning problems
+- code will be available soon
+- no intention to release
+- programmer left
+- bad backup practice
+- poor design
+- too busy to help
+
+
+## Reproducible Research
+
+"In [...] Science, however, [...] reproducing the work published in a systems conference or journal should be as simple as going to the authors’ website, downloading their code and data, typing “make,” and seeing if the results correspond to the published ones." [@Collberg2014]
+
+One approach: "[...] to develop tools that more easily capture experimental details and facilitate the communication of the environment, algorithm, data, and reasoning to collaborators and the public when findings are published." [@Leveque2012] 
+
+
+## Solution
+
+- write a narrative
+- automation of data processing & analysis
+- track changes
+- test code
+
+- __provide__: 
+    - data 
+    - source code
+    - environment information
+    
+- __Tools__:  
+    - RMarkdown
+    - Jupyter Notebooks
+
+
+## RMarkdown
+
+developed by @rmarkdown1, and @rmarkdown2 
+
+based on markdown  
+
+__Supported languages__:  
+R, Python, SQL, SAS, Stata, and more
+
+__stylistic features:__  
+- html   
+- css  
+- LaTex [@tinytex]  
+
+__Cheat sheet__
+
+(https://rmarkdown.rstudio.com/) 
+
+
+
+## What I like about Rmd
+
+- easy and intuitive to setup and use
+- basic text formatting
+- linear analysis stream, nesting possible
+- reproducibility
+- collaboration
+- versatility
+
+# __Demonstration #1__ 
+
+How to start using RMarkdown
+
+# Here comes the __most important__ slide!
+
+## How to start? 
+
+Open RStudio
+
+- __File__ -> New File -> RMarkdown (install dependencies)
+
+- __Choose__ your document style - a style template is imported 
+
+- __"Knit"__ the document
+
+- __Understand__ what is happening.
+
+- __Edit__ your first .Rmd
+
+```{r echo=FALSE, out.width = "90%", fig.align="bottom"}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/61d189fd9cdf955058415d3e1b28dd60e1bd7c9b/9791d/images/rmarkdownflow.png") 
+```
+
+https://d33wubrfki0l68.cloudfront.net/61d189fd9cdf955058415d3e1b28dd60e1bd7c9b/9791d/images/rmarkdownflow.png
+
+
+## How to use RMarkdown (text formatting)
+
+\# is a level 1 title/slide  
+\#\# is a subtitle level 2, and further on
+
+{.tabset} produces tabs of lower level subtitles
+
+
+\_\_bold\_\_ converts to __BOLD__  
+\_italic\_ converts to _italic_
+
+
+## How to use RMarkdown (code behaviour)
+
+Insert code chunk: 
+
+__Win__: Ctrl + Alt + I  
+__Mac__: Ctrl + Option + I 
+
+\'''{r option1, option2} 
+
+```{r eval=FALSE}
+here_goes <- your_R_code
+```
+
+\'''
+
+options:
+
+- `echo = TRUE` - show chunk
+- `eval = TRUE` - evaluate chunk
+
+
+## Knit
+
+[@knitr1, @knitr3]
+
+- formats your text
+- runs your code
+- code output after each chunk
+- _pandoc_ conversion to format
+
+
+
+```{r echo=FALSE, out.width = "90%", fig.align="bottom"}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/61d189fd9cdf955058415d3e1b28dd60e1bd7c9b/9791d/images/rmarkdownflow.png") 
+```
+
+https://d33wubrfki0l68.cloudfront.net/61d189fd9cdf955058415d3e1b28dd60e1bd7c9b/9791d/images/rmarkdownflow.png
+
+
+
+
+## Formats for output
+
+__presentation__ (ioslides: this presentation and "Regression in R")  
+__html__ report  ("Regression in R")  
+
+__word__  
+__pdf__  MikTex or tinytex required  
+__flexdashboard__  
+__journal article__  
+
+## RMarkdown Workflow Comparison
+
+```{r echo=FALSE, out.width = "90%", fig.align="bottom"}
+knitr::include_graphics("http://applied-r.com/wp-content/uploads/2019/01/rmarkdown_workflow.png") 
+```
+
+http://applied-r.com/wp-content/uploads/2019/01/rmarkdown_workflow.png
+
+
+## What I usually do
+
+Set up __header__ 
+
+options:
+
+- author
+- date
+- output format (multiple formats possible!)
+- tabs
+- style 
+
+add `library` chunk
+
+
+
+## Useful libraries #1
+
+_Templates_
+
+- __rticles__ - [@rticles] provides LaTeX templates for publications  
+- __bookdown__ [@bookdown2]  
+- __blogdown__ [@blogdown1, @blogdown2]  
+- __prettydoc__  [@prettydoc]   
+- __rmdformats__  [@rmdformats]
+
+## Useful libraries #2
+
+_Plugins/Functions_
+
+- __bibtex__ [@bibtex]- citation support  
+- __htmlwidgets__ [@htmlwidgets] - tables, visualization    
+- __flexdashboard__ [@flexdashboard] - dashboards  
+- __stargazer__ [@stargazer] - publication ready tables   
+- __DT__ [@DT] - interactive data tables
+- __xaringan__ - live-view of your output
+
+
+
+
+## Resources
+
+https://rmarkdown.rstudio.com/
+
+https://bookdown.org/yihui/rmarkdown/language-engines.html
+
+https://yihui.name/knitr/
+
+http://kbroman.org/knitr_knutshell/
+
+https://rpubs.com/marschmi/RMarkdown
+
+https://r4ds.had.co.nz/r-markdown.html
+
+# Recap RMarkdown / Literate programming
+
+- beginner friendly
+- learning by doing
+- makes code reproducible & understandable
+- collaboration made easy
+- use the same code for slides and reports
+
+
+
+# Questions / Comments?
+
+# Demonstration #2: advanced functions
+
+- take a look at the __Regression_Tools.Rmd__ and __Markdown_Ioslides.Rmd__
+- play around with the code
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+## References
+
+
+```{r eval=FALSE, echo=FALSE}
+
+# This code creates you a bib file in your working directory containing references to your used packages!
+
+write.bib(c("rticles", "bookdown", "prettydoc", "rmdformats", "bibtex", "htmlwidgets", "flexdashboard", "stargazer", "DT", "rmarkdown", "knitr", "tinytex", "pandoc"))
+
+```
+
+

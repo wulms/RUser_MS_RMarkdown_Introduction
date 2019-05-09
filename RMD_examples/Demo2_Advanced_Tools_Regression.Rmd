@@ -1,0 +1,434 @@
+---
+title: "Literate Programming"
+author: "Niklas Wulms"
+date: "6 May 2019"
+bibliography: Rpackages.bib
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: cerulean
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      toc_collapsed: yes
+    code_folding: hide
+
+
+---
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+
+```{r eval=FALSE, echo=FALSE}
+# add here your libraries - they are automatically added to "Rpackages.bib" file and can be referred to!
+
+write.bib(c("rmarkdown", "bibtex", "htmlwidgets", "stargazer", "DT", "knitr", "summarytools", "ggplot2", "skimr", "plotly", "tidyverse"))
+
+```
+
+
+# RMarkdown basics
+
+## Your task:
+
+* install R
+* install RStudio
+* Click File
+    + New File
+    + RMarkdown [@rmarkdown1, rmarkdown2]...
+    + install libraries/dependencies
+* open the .Rmd (RMarkdown) file of this HTML 
+    + run the code chunk with `install.packages()` manually
+    + klick on __Knit__ [@knitr1, @knitr2, @knitr3]
+    + compare .Rmd with .html output
+    + understand, what is happening
+    + copy/paste and use provided functions
+* create your first RMarkdown document
+* download the RStudio RMarkdown cheat sheet
+
+
+
+
+## RMarkdown Example: "Tools for regression analysis in R"
+
+If you opened the ".Rmd" file in RStudio, you can run the code by clicking the "play" button in the code chunks. If you open the html file, you can copy & paste the code and interact with some widgets, but are not able to change anything.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+
+You can add an __R code chunk__ by keyboard shortcuts (Win: Control + Alt + I, macOS: Cmd + Option + I) like this. 
+
+## Chunk options
+
+We entered the code `print("Hello world!")` and it is evaluated.
+
+```{r Visible Chunk}
+
+print("Hello world!")
+```
+
+__Invisible chunk:__ Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing (_echo_) of the code chunk. Commands are executed and output is generated. 
+
+```{r Invisible Chunk, echo=FALSE}
+print("You are not able to see the code chunk producing this output in the html!")
+```
+
+__Inactive chunk:__ Note that the `eval = FALSE` parameter was added to the code chunk to prevent _evaluation_ of the R code that generated the output. Commands are not executed, no output is generated.
+
+```{r Inactive chunk, eval=FALSE}
+print("This command is not evaluated. But you are able to see the chunk.")
+```
+
+
+
+
+
+
+# Preparation {.tabset}
+
+The used libraries can be installed and are loaded here.
+
+## Install Libraries
+
+`eval=FALSE` in chunk turns code evaluation during __"Knit"__ off!!! You don't need to install the packages during each __Knit__ again and again.
+
+__BUT__: To "Knit" the .Rmd you need to run this chunk manually to install the packages.
+
+```{r eval=FALSE}
+install.packages("glue")
+install.packages("colorspace")
+install.packages("skimr")
+install.packages("summarytools")
+install.packages("tidyverse")
+install.packages("DT")
+install.packages("stargazer")
+install.packages("plotly")
+```
+
+## Libraries
+
+```{r libraries, echo=TRUE, message=FALSE, warning=FALSE}
+library(skimr)
+library(pander)
+library(summarytools)
+library(tidyverse)
+library(DT)
+library(stargazer)
+library(plotly)
+```
+
+## Citation of used libraries
+
+```{r}
+citation()
+citation("skimr")
+citation("summarytools")
+citation("tidyverse")
+citation("DT")
+citation("stargazer")
+citation("plotly")
+```
+
+
+
+# Dataset selection
+
+## Datasets 
+
+Here you can find example datasets for demonstrating functions.
+
+In reality you would:  
+ 
+- load or import your data  
+- clean and tidy up your data  
+- calculate variables  
+- check variable types  
+
+## Find example datasets
+
+```{r explore possible datasets, eval=FALSE}
+# to look at R-base datasets
+data()
+# to look at all datasets included in your instance of R throug additional installed packages
+data(package = .packages(all.available = TRUE))
+```
+
+
+I selected the __ChickWeight__ dataset for further demonstration. You can take your own datasets and explore them with the functions mentioned here.
+
+```{r}
+?ChickWeight
+```
+
+
+# Data in the ChickWeight dataset 
+
+
+## static tables {.tabset}
+
+### Base-R
+
+```{r}
+head(ChickWeight, n = 20)
+```
+
+### package "tibble" (tidyverse [@tidyverse])
+
+```{r}
+glimpse(ChickWeight)
+```
+
+## interactive tables {.tabset}
+
+### RMarkdown "paged_table"
+
+Default setting if `df_print: paged` is added to the header!
+
+```{r}
+rmarkdown::paged_table(ChickWeight)
+```
+
+### package "DT" (Datatable [@DT])
+
+```{r}
+datatable(ChickWeight)
+```
+
+### customized DT [@DT]
+
+```{r}
+ChickWeight %>%
+    datatable(filter = 'top', 
+            extensions = list('Buttons' = NULL,
+                              'Scroller' = NULL),
+            
+            options = list(
+                           dom = 'Bfrtip', 
+                           buttons = list(c('copy', 'csv', 'excel', 'pdf', 'print'), 
+                                          I('colvis')),
+                           deferRender = TRUE,
+                           scrollX = 400,
+                           scrollY = 600, 
+                           scroller = TRUE,
+                           pageLength = 10
+                           )
+    )
+```
+
+
+
+
+# Summary statistics {.tabset}
+
+## Base-R
+
+```{r Summary}
+summary(ChickWeight)
+```
+
+## Package "skimr" [@skimr]
+
+```{r Skimr function, results = "asis", warning=FALSE}
+panderOptions('table.split.table', Inf)
+
+ skim(ChickWeight) %>%
+   pander(table.split.table = Inf, table.split.cells = Inf)
+```
+
+## Package "Stargazer" [@stargazer]
+
+```{r, results="asis"}
+stargazer(ChickWeight, type = "html")
+```
+
+
+
+## Package "summarytools" [@summarytools]
+
+```{r, results="asis"}
+ChickWeight %>%
+  dfSummary(style = "grid", plain.ascii = FALSE, graph.magnif = 0.75, tmp.img.dir = "/tmp")
+
+
+```
+
+
+
+# Plots using ggplot2 [@ggplot2]
+
+## Static plots {.tabset}
+
+### Lineplot
+
+weight ~ time for each chicken (`geom_line()`)
+
+```{r}
+ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, col = Chick)) +
+  geom_line() #+
+#  geom_smooth(aes(group = Diet)) +
+#  facet_grid( ~ Diet) +
+#  theme(legend.title = element_blank(),
+#        legend.position = "none")
+```
+
+
+### remove legend
+
+```{r}
+ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, col = Chick)) +
+  geom_line() +
+#  geom_smooth(aes(group = Diet)) +
+#  facet_grid( ~ Diet) +
+  theme(legend.title = element_blank(),
+        legend.position = "none")
+```
+
+
+### include fits
+
+`loess fit` (`geom_smooth()`)
+
+```{r}
+ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, col = Diet)) +
+#  geom_line(aes(x = Time, y = weight, col = Chick)) +
+  geom_smooth() +
+#  facet_grid( ~ Diet) +
+  theme(legend.title = element_blank(),
+        legend.position = "none")
+
+
+ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, col = Diet)) +
+#  geom_line(aes(x = Time, y = weight, col = Chick)) +
+  geom_smooth(method = "lm") +
+#  facet_grid( ~ Diet) +
+  theme(legend.title = element_blank(),
+        legend.position = "none")
+```
+
+
+### create subplots
+
+split the data by `diet` (`facet_grid(+ Diet)`)
+
+```{r}
+
+plot1 <- ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, col = Chick)) +
+  geom_line() +
+  geom_smooth(aes(group = Diet)) +
+  facet_grid( ~ Diet) +
+  theme(legend.title = element_blank(),
+        legend.position = "none")
+
+plot1
+
+```
+
+### Boxplots
+
+```{r}
+
+
+plot2 <- ChickWeight %>%
+  ggplot(aes(x = Time, y = weight, group = Time)) +
+  geom_boxplot() +
+#  geom_smooth(aes(group = Diet)) +
+  facet_grid( ~ Diet) +
+  theme(legend.title = element_blank(),
+        legend.position = "none")
+
+
+plot2
+
+```
+
+## interactive plots with plotly [@plotly] {.tabset}
+
+
+### subplots 
+
+```{r}
+ggplotly(plot1)
+
+
+```
+
+### boxplots 
+```{r}
+ggplotly(plot2)
+```
+
+
+# Fitting a linear / multiple regression model {.tabset}
+
+## linear regression model
+
+`lm(formula = dependent_variable ~ predictor/observed_variable,
+data = your_data)`
+
+```{r}
+linear_regression_model <- lm(formula = weight ~ Time,
+                              data = ChickWeight)
+
+summary(linear_regression_model)
+
+
+```
+
+## plot diagnostics
+
+```{r}
+par(mfrow = c(2,2))
+plot(linear_regression_model)
+```
+
+
+## multiple regression model
+
+add with `+ var` further variables to the model
+
+`lm(formula = dependent_variable ~ 1st_var + 2nd_var + more_variables, data = your_data)`
+
+
+
+```{r}
+multiple_regression_model <- lm(formula = weight ~ Time + Diet,
+                                data = ChickWeight)
+
+summary(multiple_regression_model)
+```
+
+## plot diagnostics
+
+```{r}
+par(mfrow = c(2,2))
+plot(multiple_regression_model)
+```
+
+## Stargazer Publication Ready Tables [@stargazer]
+
+```{r results = 'asis'}
+stargazer(linear_regression_model, multiple_regression_model,
+          title = "Linear and Multiple Regression - ChickWeight",
+          column.labels = c("Linear Model", "Multiple Model"),
+          type = "html",
+          ci = TRUE,
+          digit.separator = ",",
+          report = c("vcs*"), 
+          single.row = TRUE
+          )
+```
+
+# Questions / Feedback
+
+
+## References
